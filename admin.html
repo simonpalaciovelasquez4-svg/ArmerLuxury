@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Armer Luxury</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="brand">
+            <img src="img/logo.png" alt="Armer Luxury Logo" class="logo">
+            <h1>Armer Luxury</h1>
+        </div>
+        <h2>Panel de administrador</h2>
+    </header>
+    <nav style="margin-bottom: 24px;">
+        <a href="index.html">Inicio</a> |
+        <a href="productos.html">Productos</a> |
+        <a href="carrito.html">Carrito</a> |
+        <a href="envio.html">Programar Envío</a> |
+        <a href="pqrs.html">PQRS</a>
+    </nav>
+    <section style="max-width:960px;margin:0 auto;padding:0 20px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+            <div style="background:#222;padding:28px;border-radius:14px;box-shadow:0 2px 16px rgba(0,0,0,0.25);">
+                <h3 style="color:#d4af37;margin-bottom:18px;">Crear / editar producto</h3>
+                <form id="admin-form" style="display:flex;flex-direction:column;gap:14px;">
+                    <input type="hidden" id="producto-id">
+                    <label style="color:#d4af37;">Nombre del producto:</label>
+                    <input type="text" id="producto-nombre" required style="padding:10px;border-radius:6px;border:none;background:#333;color:#fff;">
+                    <label style="color:#d4af37;">Precio:</label>
+                    <input type="number" id="producto-precio" min="1" required style="padding:10px;border-radius:6px;border:none;background:#333;color:#fff;">
+                    <label style="color:#d4af37;">URL de imagen:</label>
+                    <input type="text" id="producto-imagen" placeholder="img/nombre.png" style="padding:10px;border-radius:6px;border:none;background:#333;color:#fff;">
+                    <label style="color:#d4af37;">Descripción corta:</label>
+                    <textarea id="producto-descripcion" rows="4" style="padding:10px;border-radius:6px;border:none;background:#333;color:#fff;"></textarea>
+                    <button type="submit" style="padding:12px 0;background:#d4af37;color:#111;border:none;border-radius:6px;font-weight:bold;font-size:1.05em;">Guardar producto</button>
+                    <button type="button" id="cancel-edit" style="padding:10px 0;background:#444;color:#fff;border:none;border-radius:6px;font-weight:bold;display:none;">Cancelar edición</button>
+                </form>
+            </div>
+            <div style="background:#222;padding:28px;border-radius:14px;box-shadow:0 2px 16px rgba(0,0,0,0.25);">
+                <h3 style="color:#d4af37;margin-bottom:18px;">Productos existentes</h3>
+                <div id="admin-productos" style="display:grid;gap:14px;"></div>
+            </div>
+        </div>
+    </section>
+    <script>
+    const storageKey = 'productosList';
+    const defaultProducts = [
+        { id: 'p1', nombre: 'Pistola Glock', precio: 1200000, imagen: 'img/glock.png', descripcion: 'Pistola de alta precisión.' },
+        { id: 'p2', nombre: 'Rifle M4', precio: 3500000, imagen: 'img/rifle.png', descripcion: 'Rifle ideal para misiones tácticas.' },
+        { id: 'p3', nombre: 'Escopeta', precio: 2000000, imagen: 'img/escopeta.png', descripcion: 'Escopeta potente y confiable.' },
+        { id: 'p4', nombre: 'Bereta', precio: 1500000, imagen: 'img/bereta.png', descripcion: 'Marca confiable para coleccionistas.' },
+        { id: 'p5', nombre: 'Revolver', precio: 1700000, imagen: 'img/revolver.png', descripcion: 'Revolver clásico con estilo.' },
+        { id: 'p6', nombre: 'Uzi', precio: 2000000, imagen: 'img/uzi.png', descripcion: 'Subfusil compacto y rápido.' }
+    ];
+
+    function loadProducts() {
+        const saved = localStorage.getItem(storageKey);
+        if (!saved) {
+            localStorage.setItem(storageKey, JSON.stringify(defaultProducts));
+            return defaultProducts;
+        }
+        try { return JSON.parse(saved); } catch { return defaultProducts; }
+    }
+
+    function saveProducts(products) {
+        localStorage.setItem(storageKey, JSON.stringify(products));
+    }
+
+    function createProductCard(product) {
+        return `
+            <div style="background:#111;border:1px solid #333;border-radius:12px;padding:16px;display:grid;grid-template-columns:80px 1fr auto;gap:12px;align-items:center;">
+                <img src="${product.imagen || 'img/glock.png'}" alt="${product.nombre}" style="width:80px;height:80px;object-fit:cover;border-radius:10px;">
+                <div style="text-align:left;">
+                    <h4 style="margin:0 0 6px 0;color:#d4af37;">${product.nombre}</h4>
+                    <p style="margin:0 6px 4px 0;font-size:0.95em;color:#ccc;">${product.descripcion || 'Sin descripción'}</p>
+                    <p style="margin:0;font-weight:bold;">$${product.precio.toLocaleString()}</p>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <button class="btn-edit" data-id="${product.id}" style="background:#4a90e2;color:#fff;padding:8px;border-radius:8px;border:none;">Editar</button>
+                    <button class="btn-delete" data-id="${product.id}" style="background:#e03a3a;color:#fff;padding:8px;border-radius:8px;border:none;">Eliminar</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderAdminProducts() {
+        const container = document.getElementById('admin-productos');
+        const products = loadProducts();
+        if (!container) return;
+        container.innerHTML = products.map(createProductCard).join('');
+        container.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', () => {
+                const id = button.dataset.id;
+                const updated = loadProducts().filter(p => p.id !== id);
+                saveProducts(updated);
+                renderAdminProducts();
+            });
+        });
+        container.querySelectorAll('.btn-edit').forEach(button => {
+            button.addEventListener('click', () => {
+                const id = button.dataset.id;
+                const product = loadProducts().find(p => p.id === id);
+                if (!product) return;
+                document.getElementById('producto-id').value = product.id;
+                document.getElementById('producto-nombre').value = product.nombre;
+                document.getElementById('producto-precio').value = product.precio;
+                document.getElementById('producto-imagen').value = product.imagen;
+                document.getElementById('producto-descripcion').value = product.descripcion;
+                document.getElementById('cancel-edit').style.display = 'block';
+            });
+        });
+    }
+
+    function resetForm() {
+        document.getElementById('admin-form').reset();
+        document.getElementById('producto-id').value = '';
+        document.getElementById('cancel-edit').style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderAdminProducts();
+        document.getElementById('admin-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('producto-id').value || `p${Date.now()}`;
+            const nombre = document.getElementById('producto-nombre').value.trim();
+            const precio = parseInt(document.getElementById('producto-precio').value, 10);
+            const imagen = document.getElementById('producto-imagen').value.trim() || 'img/glock.png';
+            const descripcion = document.getElementById('producto-descripcion').value.trim();
+            const products = loadProducts();
+            const existingIndex = products.findIndex(p => p.id === id);
+            const newProduct = { id, nombre, precio, imagen, descripcion };
+            if (existingIndex >= 0) {
+                products[existingIndex] = newProduct;
+            } else {
+                products.push(newProduct);
+            }
+            saveProducts(products);
+            renderAdminProducts();
+            resetForm();
+        });
+        document.getElementById('cancel-edit').addEventListener('click', resetForm);
+    });
+    </script>
+</body>
+</html>
