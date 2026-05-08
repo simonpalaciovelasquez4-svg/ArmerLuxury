@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Armer Luxury</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="brand">
+        <img src="img/logo.png" alt="Armer Luxury Logo" class="logo">
+        <h1>Armer Luxury</h1>
+    </div>
+    <nav style="margin-bottom: 24px;">
+        <a href="index.html">Inicio</a> |
+        <a href="productos.html">Productos</a> |
+        <a href="carrito.html">Carrito</a> |
+        <a href="envio.html">Programar Envío</a>|
+        <a href="pqrs.html">PQRS</a>
+    </nav>
+
+    <p>Catálogo exclusivo</p>
+
+    <div class="contenedor">
+
+    <div style="margin-bottom:24px;width:100%;text-align:center;">
+        <label for="filtro-precio" style="font-weight:bold;color:#d4af37;">Filtrar por precio máximo:</label>
+        <input type="number" id="filtro-precio" min="0" placeholder="Ej: 2000000" style="padding:6px 10px;border-radius:6px;border:none;background:#333;color:#fff;width:160px;">
+    </div>
+
+        <div class="producto">
+            <img src="img/glock.png">
+            <h3>Pistola Glock</h3>
+            <p>$1.200.000</p>
+            <button class="btn-agregar" data-nombre="Pistola Glock" data-precio="1200000">Agregar</button>
+        </div>
+
+        <div class="producto">
+            <img src="img/rifle.png">
+            <h3>Rifle M4</h3>
+            <p>$3.500.000</p>
+            <button class="btn-agregar" data-nombre="Rifle M4" data-precio="3500000">Agregar</button>
+        </div>
+
+        <div class="producto">
+            <img src="img/escopeta.png">
+            <h3>Escopeta</h3>
+            <p>$2.000.000</p>
+            <button class="btn-agregar" data-nombre="Escopeta" data-precio="2000000">Agregar</button>
+        </div>
+
+        <div class="producto">
+            <img src="img/bereta.png">
+            <h3>Bereta</h3>
+            <p>$1.500.000</p>
+            <button class="btn-agregar" data-nombre="Bereta" data-precio="1500000">Agregar</button>
+        </div>
+
+        <div class="producto">
+            <img src="img/revolver.png">
+            <h3>Revolver</h3>
+            <p>$1.700.000</p>
+            <button class="btn-agregar" data-nombre="Revolver" data-precio="1700000">Agregar</button>
+        </div>
+
+        <div class="producto">
+            <img src="img/uzi.png">
+            <h3>Uzi</h3>
+            <p>$2.000.000</p>
+            <button class="btn-agregar" data-nombre="Uzi" data-precio="2000000">Agregar</button>
+        </div>
+    </div>
+
+    <h2>Pedido</h2>
+    <ul id="lista"></ul>
+
+    <h3>Total: $<span id="total">0</span></h3>
+
+    <button id="btn-limpiar">Limpiar Pedido</button>
+    <br><br>
+    <button id="btn-comprar" style="padding:14px 0;width:220px;background:#d4af37;color:#111;font-weight:bold;font-size:1.1em;border:none;border-radius:6px;box-shadow:0 2px 8px rgba(212,175,55,0.12);transition:background 0.2s;">Comprar</button>
+    <script>
+        document.getElementById('btn-comprar').onclick = function() {
+            window.location.href = 'pagos.html';
+        };
+    </script>
+    <footer>
+     <footer>
+    <p>copyright © 2024 Armer Luxury. Todos los derechos reservados. Desarrollado por Simón Palacio.</p>
+    </footer>
+    </footer>
+
+    <script src="js/dom.js"></script>
+<script>
+// Filtro de productos por precio
+document.addEventListener("DOMContentLoaded", function() {
+    const filtro = document.getElementById('filtro-precio');
+    const contenedor = document.querySelector('.contenedor');
+    if (!filtro || !contenedor) return;
+    filtro.addEventListener('input', function() {
+        const max = parseInt(filtro.value);
+        const productos = contenedor.querySelectorAll('.producto');
+        productos.forEach(prod => {
+            const precioTxt = prod.querySelector('p').textContent.replace(/[^\d]/g, '');
+            const precio = parseInt(precioTxt);
+            if (!filtro.value || isNaN(max) || precio <= max) {
+                prod.style.display = '';
+            } else {
+                prod.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>
