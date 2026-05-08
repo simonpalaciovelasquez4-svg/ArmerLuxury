@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Armer Luxury - Productos</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Login y registro movidos a login.html -->
+    <header>
+        <div class="brand">
+            <img src="img/logo.png" alt="Armer Luxury Logo" class="logo">
+            <h1>Armer Luxury</h1>
+        </div>
+        <p>Nuestro catálogo exclusivo de armas y accesorios de primer nivel</p>
+    </header>
+
+    <nav style="margin-bottom: 24px;">
+        <a href="index.html">Inicio</a> |
+        <a href="productos.html">Productos</a> |
+        <a href="carrito.html">Carrito</a> |
+        <a href="envio.html">Programar Envío</a>|
+        <a href="pqrs.html">PQRS</a>
+    </nav>
+
+
+    <section id="productos">
+        <h2>Productos</h2>
+        <p>Descubre nuestra selección actual de productos de alta gama. Cada artículo ha sido elegido por su desempeño, durabilidad y diseño, pensado para clientes exigentes que buscan calidad superior en cada detalle.</p>
+
+        <div style="margin-bottom:24px;">
+            <label for="filtro-precio" style="font-weight:bold;color:#d4af37;">Filtrar por precio máximo:</label>
+            <input type="number" id="filtro-precio" min="0" placeholder="Ej: 2000000" style="padding:6px 10px;border-radius:6px;border:none;background:#333;color:#fff;width:160px;">
+        </div>
+
+        <div class="contenedor" id="contenedor-productos">
+            <div class="producto">
+                <img src="img/glock.png" alt="Pistola Glock">
+                <h3>Pistola Glock</h3>
+                <p>$1.200.000</p>
+            </div>
+            <div class="producto">
+                <img src="img/rifle.png" alt="Rifle M4">
+                <h3>Rifle M4</h3>
+                <p>$3.500.000</p>
+            </div>
+            <div class="producto">
+                <img src="img/escopeta.png" alt="Escopeta">
+                <h3>Escopeta</h3>
+                <p>$2.000.000</p>
+            </div>
+                  <div class="producto">
+                <img src="img/bereta.png" alt="Bereta">
+                <h3>Bereta</h3>
+                <p>$1.500.000</p>
+            </div>
+                  <div class="producto">
+                <img src="img/revolver.png" alt="Revolver">
+                <h3>Revolver</h3>
+                <p>$1.700.000</p>
+            </div>
+                  <div class="producto">
+                <img src="img/uzi.png" alt="Uzi">
+                <h3>Uzi</h3>
+                <p>$2.000.000</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+    <p>copyright © 2024 Armer Luxury. Todos los derechos reservados. Desarrollado por Simón Palacio.</p>
+    </footer>
+</body>
+<script src="js/dom.js"></script>
+<script>
+// Filtro de productos por precio
+document.addEventListener("DOMContentLoaded", function() {
+    const filtro = document.getElementById('filtro-precio');
+    const contenedor = document.getElementById('contenedor-productos');
+    if (!filtro || !contenedor) return;
+    filtro.addEventListener('input', function() {
+        const max = parseInt(filtro.value);
+        const productos = contenedor.querySelectorAll('.producto');
+        productos.forEach(prod => {
+            const precioTxt = prod.querySelector('p').textContent.replace(/[^\d]/g, '');
+            const precio = parseInt(precioTxt);
+            if (!filtro.value || isNaN(max) || precio <= max) {
+                prod.style.display = '';
+            } else {
+                prod.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+<script>
+// Redirigir a login.html si no está logueado
+document.addEventListener("DOMContentLoaded", function() {
+    const user = localStorage.getItem("user");
+    const pass = localStorage.getItem("pass");
+    const age = parseInt(localStorage.getItem("age"));
+    if (!user || !pass || isNaN(age) || age < 18) {
+        window.location.href = "login.html";
+    }
+});
+</script>
+</html>
