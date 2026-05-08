@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PQRS - Armer Luxury</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="brand">
+            <img src="img/logo.png" alt="Armer Luxury Logo" class="logo">
+            <h1>Armer Luxury</h1>
+        </div>
+        <h2>Contáctanos - PQRS</h2>
+    </header>
+    <nav style="margin-bottom: 24px;">
+        <a href="index.html">Inicio</a> |
+        <a href="productos.html">Productos</a> |
+        <a href="carrito.html">Carrito</a> |
+        <a href="envio.html">Programar Envío</a>|
+        <a href="pqrs.html">PQRS</a>
+    </nav>>
+    <section style="max-width:480px;margin:0 auto;background:#222;padding:32px 28px 24px 28px;border-radius:14px;box-shadow:0 2px 16px rgba(0,0,0,0.25);">
+        <form id="pqrs-form" style="display:flex;flex-direction:column;gap:16px;">
+            <label for="nombre" style="font-weight:bold;color:#d4af37;">Nombre:</label>
+            <input type="text" id="nombre" required style="padding:10px;border-radius:6px;border:none;background:#333;color:#fff;">
+            <label for="email" style="font-weight:bold;color:#d4af37;">Correo electrónico:</label>
+            <input type="email" id="email" required style="padding:10px;border-radius:6px;border:none;background:#333;color:#fff;">
+            <label for="tipo" style="font-weight:bold;color:#d4af37;">Tipo de solicitud:</label>
+            <select id="tipo" required style="padding:10px;border-radius:6px;border:none;background:#333;color:#fff;">
+                <option value="Petición">Petición</option>
+                <option value="Queja">Queja</option>
+                <option value="Reclamo">Reclamo</option>
+                <option value="Sugerencia">Sugerencia</option>
+            </select>
+            <label for="mensaje" style="font-weight:bold;color:#d4af37;">Mensaje:</label>
+            <textarea id="mensaje" rows="5" required style="padding:10px;border-radius:6px;border:none;background:#333;color:#fff;"></textarea>
+            <button type="submit" style="padding:12px 0;background:#d4af37;color:#111;border:none;border-radius:6px;font-weight:bold;font-size:1.1em;margin-top:10px;transition:background 0.2s;">Enviar PQRS</button>
+        </form>
+        <div id="pqrs-exito" style="display:none;margin-top:20px;background:#222;border:2px solid #d4af37;border-radius:8px;padding:18px 0;font-size:1.15em;color:#d4af37;">¡Tu PQRS ha sido enviada correctamente!</div>
+    </section>
+    <script type="text/javascript" src="https://cdn.emailjs.com/sdk/3.2.0/email.min.js"></script>
+    <script>
+    (function() {
+        emailjs.init('YOUR_PUBLIC_KEY');
+    })();
+
+    document.getElementById('pqrs-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const nombre = document.getElementById('nombre').value;
+        const email = document.getElementById('email').value;
+        const tipo = document.getElementById('tipo').value;
+        const mensaje = document.getElementById('mensaje').value;
+
+        const templateParams = {
+            from_name: nombre,
+            from_email: email,
+            request_type: tipo,
+            message: mensaje,
+            to_email: 'simonpalaciovelasquez4@gmail.com'
+        };
+
+        emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+            .then(function() {
+                document.getElementById('pqrs-exito').style.display = 'block';
+                document.getElementById('pqrs-form').reset();
+            }, function(error) {
+                alert('Error al enviar PQRS: ' + error.text + '. Por favor intenta de nuevo.');
+            });
+    });
+    </script>
+</body>
+</html>
